@@ -63,6 +63,7 @@ const fetchSearchedMovies = async (searchKeyword, searchPageCount) => {
   return data;
 };
 const posterBaseURL = "https://image.tmdb.org/t/p/original/";
+const base = "/javascript-movie-review/";
 const createMovieItem = (movie) => {
   const posterSrc = `${posterBaseURL}${movie.poster_path}`;
   const li = document.createElement("li");
@@ -78,7 +79,7 @@ const createMovieItem = (movie) => {
           <div class="skeleton-rate"></div>
           <div class="skeleton-title"></div>
           <p class="rate">
-            <img src="/images/star_empty.png" class="star"/><span>${movie.vote_average}</span>
+            <img src="${base}images/star_empty.png" class="star"/><span>${movie.vote_average}</span>
           </p>
           <strong>${movie.title}</strong>
         </div>
@@ -96,7 +97,7 @@ const createMovieItem = (movie) => {
   img.addEventListener(
     "error",
     () => {
-      img.src = "/images/no_image.png";
+      img.src = `${base}images/no_image.png`;
       removeSkeleton();
     },
     { once: true }
@@ -128,7 +129,7 @@ const renderBanner = async (fristMovieData) => {
     /*html*/
     `
     <div class="rate">
-      <img src="/images/star_empty.png" class="star" />
+      <img src="${base}images/star_empty.png" class="star" />
       <span class="rate-value">${mostPopularMovie.vote_average}</span>
     </div>
     <div class="title">${mostPopularMovie.title}</div>
@@ -146,12 +147,12 @@ const replaceBanner = (header, searchKeyword) => {
     <div class="top-rated-container">
       <div class="header-top">
         <h1 class="logo">
-          <a href="/"><img src="/images/logo.png" alt="MovieList" /></a>
+          <a href="/"><img src="${base}images/logo.png" alt="MovieList" /></a>
         </h1>
         <div class="search-bar">
           <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
           <button class="search-button">
-            <img src="/images/search_icon.png" alt="검색" class="search-icon" />
+            <img src="${base}images/search_icon.png" alt="검색" class="search-icon" />
           </button>
         </div>
       </div>
@@ -173,7 +174,7 @@ const renderSearchedMovies = async (searchKeyword, searchPageCount) => {
       /*html*/
       `
       <div id="no-result">
-        <img src="/images/planet_icon.png" alt="검색 결과 없음" class="no-result-icon" />
+        <img src="${base}images/planet_icon.png" alt="검색 결과 없음" class="no-result-icon" />
         <p class="no-result-text">검색 결과가 없습니다.</p>
       </div>`
     );
@@ -193,10 +194,10 @@ class AppState {
 class App {
   #state = new AppState();
   constructor() {
-    const base = "/javascript-movie-review/";
+    const base2 = "/javascript-movie-review/";
     document.querySelector("#app").innerHTML = template.replace(
       /\/images\//g,
-      `${base}images/`
+      `${base2}images/`
     );
     renderMovies(this.#state.moviePageCount);
     this.addEventListeners();
