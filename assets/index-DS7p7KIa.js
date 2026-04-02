@@ -221,6 +221,8 @@ class App {
   #handleSearchSubmit = async () => {
     this.#state.isSearched = true;
     this.#state.searchPageCount = 1;
+    this.#state.totalSearchPages = 0;
+    this.#showLoadButton();
     this.#state.currentKeyword = document.querySelector(".search-input").value;
     const list = document.querySelector(".thumbnail-list");
     if (list) list.replaceChildren();
@@ -252,7 +254,6 @@ class App {
     }
     if (this.#state.isSearched) {
       this.#state.searchPageCount += 1;
-      this.#state.currentKeyword = document.querySelector(".search-input").value;
       const totalSearchPages = await renderSearchedMovies(
         this.#state.currentKeyword,
         this.#state.searchPageCount
@@ -262,10 +263,13 @@ class App {
       }
     }
   };
-  // 더보기 버튼 숨기는 헬퍼 함수
   #hideLoadButton() {
     const loadMovieButton = document.querySelector("#load-movie-button");
     if (loadMovieButton) loadMovieButton.style.display = "none";
+  }
+  #showLoadButton() {
+    const loadMovieButton = document.querySelector("#load-movie-button");
+    if (loadMovieButton) loadMovieButton.style.display = "";
   }
 }
 new App();
