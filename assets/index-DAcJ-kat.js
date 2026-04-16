@@ -27,7 +27,14 @@
     fetch(link.href, fetchOpts);
   }
 })();
-const template = '<!doctype html>\n<html lang="ko">\n\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n  <title>영화 리뷰</title>\n</head>\n\n<body>\n  <div id="app">\n    <header id="header">\n      <div class="background-container">\n        <div class="overlay" aria-hidden="true"></div>\n        <div class="top-rated-container">\n          <div class="header-top">\n            <h1 class="logo">\n              <a href="/"><img src="/images/logo.png" alt="MovieList" /></a>\n            </h1>\n            <div class="search-bar">\n              <input type="text" class="search-input" placeholder="검색어를 입력하세요" />\n              <button class="search-button">\n                <img src="/images/search_icon.png" alt="검색" class="search-icon" />\n              </button>\n            </div>\n          </div>\n          <div class="top-rated-movie">\n          </div>\n        </div>\n      </div>\n    </header>\n    <div class="container">\n      <main>\n        <section>\n          <h2 id="section-title">지금 인기 있는 영화</h2>\n          <ul class="thumbnail-list">\n          </ul>\n          <div id="scroll-sentinel"></div>\n        </section>\n      </main>\n    </div>\n\n    <footer class="footer">\n      <p><img src="/images/woowacourse_logo.png" width="180" /></p>\n      <p>&copy; 우아한테크코스 All Rights Reserved.</p>\n    </footer>\n  </div>\n\n  <div class="modal-background" id="modalBackground">\n    <div class="modal">\n      <button class="close-modal" id="closeModal">\n        <img src="/images/modal_button_close.png" />\n      </button>\n      <div class="modal-container"></div>\n    </div>\n  </div>\n</body>\n\n</html>\n\n<!--\n  포스터 원본: https://image.tmdb.org/t/p/original//pmemGuhr450DK8GiTT44mgwWCP7.jpg\n  포스터 썸네일: https://media.themoviedb.org/t/p/w440_and_h660_face/pmemGuhr450DK8GiTT44mgwWCP7.jpg\n  배너 원본: https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/stKGOm8UyhuLPR9sZLjs5AkmncA.jpg\n-->';
+const template = '<!doctype html>\n<html lang="ko">\n\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n  <title>영화 리뷰</title>\n</head>\n\n<body>\n  <div id="app">\n    <header id="header">\n      <div class="background-container">\n        <div class="overlay" aria-hidden="true"></div>\n        <div class="top-rated-container">\n          <div class="header-top">\n            <h1 class="logo">\n              <a href="#" onclick="location.reload()"><img src="/images/logo.png" alt="MovieList" /></a>\n            </h1>\n            <div class="search-bar">\n              <input type="text" class="search-input" placeholder="검색어를 입력하세요" />\n              <button class="search-button">\n                <img src="/images/search_icon.png" alt="검색" class="search-icon" />\n              </button>\n            </div>\n          </div>\n          <div class="top-rated-movie">\n          </div>\n        </div>\n      </div>\n    </header>\n    <div class="container">\n      <main>\n        <section>\n          <h2 id="section-title">지금 인기 있는 영화</h2>\n          <ul class="thumbnail-list">\n          </ul>\n          <div id="scroll-sentinel"></div>\n        </section>\n      </main>\n    </div>\n\n    <footer class="footer">\n      <p><img src="/images/woowacourse_logo.png" width="180" /></p>\n      <p>&copy; 우아한테크코스 All Rights Reserved.</p>\n    </footer>\n  </div>\n\n  <div class="modal-background" id="modalBackground">\n    <div class="modal">\n      <button class="close-modal" id="closeModal">\n        <img src="/images/modal_button_close.png" />\n      </button>\n      <div class="modal-container"></div>\n    </div>\n  </div>\n</body>\n\n</html>\n\n<!--\n  포스터 원본: https://image.tmdb.org/t/p/original//pmemGuhr450DK8GiTT44mgwWCP7.jpg\n  포스터 썸네일: https://media.themoviedb.org/t/p/w440_and_h660_face/pmemGuhr450DK8GiTT44mgwWCP7.jpg\n  배너 원본: https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/stKGOm8UyhuLPR9sZLjs5AkmncA.jpg\n-->';
+class AppState {
+  moviePageCount = 1;
+  searchPageCount = 1;
+  isSearched = false;
+  isLoading = false;
+  currentKeyword = "";
+}
 const fetchMovies = async (moviePageCount) => {
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=${moviePageCount}`,
@@ -80,7 +87,7 @@ const fetchMovieDetail = async (movieId) => {
   return data;
 };
 const posterBaseURL$1 = "https://image.tmdb.org/t/p/original/";
-const base$1 = "/javascript-movie-review/";
+const base$2 = "/javascript-movie-review/";
 const createMovieItem = (movie) => {
   const posterSrc = `${posterBaseURL$1}${movie.poster_path}`;
   const li = document.createElement("li");
@@ -96,7 +103,7 @@ const createMovieItem = (movie) => {
           <div class="skeleton-rate"></div>
           <div class="skeleton-title"></div>
           <p class="rate">
-            <img src="${base$1}images/star_empty.png" class="star"/><span>${movie.vote_average}</span>
+            <img src="${base$2}images/star_empty.png" class="star"/><span>${movie.vote_average}</span>
           </p>
           <strong>${movie.title}</strong>
         </div>
@@ -114,7 +121,7 @@ const createMovieItem = (movie) => {
   img.addEventListener(
     "error",
     () => {
-      img.src = `${base$1}images/no_image.png`;
+      img.src = `${base$2}images/no_image.png`;
       removeSkeleton();
     },
     { once: true }
@@ -151,7 +158,7 @@ const renderBanner = async (fristMovieData) => {
     /*html*/
     `
     <div class="rate">
-      <img src="${base$1}images/star_empty.png" class="star" />
+      <img src="${base$2}images/star_empty.png" class="star" />
       <span class="rate-value">${mostPopularMovie.vote_average}</span>
     </div>
     <div class="title">${mostPopularMovie.title}</div>
@@ -169,12 +176,12 @@ const replaceBanner = (header, searchKeyword) => {
     <div class="top-rated-container">
       <div class="header-top">
         <h1 class="logo">
-          <a href="/"><img src="${base$1}images/logo.png" alt="MovieList" /></a>
+          <a href="#" onclick="location.reload()"><img src="${base$2}images/logo.png" alt="MovieList" /></a>
         </h1>
         <div class="search-bar">
           <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
           <button class="search-button">
-            <img src="${base$1}images/search_icon.png" alt="검색" class="search-icon" />
+            <img src="${base$2}images/search_icon.png" alt="검색" class="search-icon" />
           </button>
         </div>
       </div>
@@ -186,6 +193,7 @@ const replaceBanner = (header, searchKeyword) => {
   const input = header.querySelector(".search-input");
   if (input) input.value = searchKeyword;
 };
+const base$1 = "/javascript-movie-review/";
 const renderSearchedMovies = async (searchKeyword, searchPageCount) => {
   try {
     const movieData = await fetchSearchedMovies(
@@ -214,13 +222,35 @@ const renderSearchedMovies = async (searchKeyword, searchPageCount) => {
     return 0;
   }
 };
-class AppState {
-  moviePageCount = 1;
-  searchPageCount = 1;
-  isSearched = false;
-  currentKeyword = "";
-}
-class SearchHandler {
+const resetMovieList = () => {
+  const list = document.querySelector(".thumbnail-list");
+  if (list) list.replaceChildren();
+};
+const replaceHeaderWithBanner = (keyword) => {
+  const header = document.querySelector("#header");
+  if (header) {
+    header.replaceChildren();
+    replaceBanner(header, keyword);
+  }
+};
+const replaceSectionTitle = (keyword) => {
+  const sectionTitle = document.querySelector("#section-title");
+  if (sectionTitle) {
+    sectionTitle.textContent = `"${keyword}" 검색 결과`;
+  }
+};
+const createScrollObserver = (targetElement, onIntersect) => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        onIntersect();
+      }
+    });
+  });
+  observer.observe(targetElement);
+  return () => observer.disconnect();
+};
+class MovieBrowseHandler {
   constructor(state) {
     this.state = state;
   }
@@ -234,43 +264,57 @@ class SearchHandler {
       this.handleSearchSubmit();
     }
   };
+  async init() {
+    await renderMovies(this.state.moviePageCount);
+    document.addEventListener("click", this.handleSearchButtonClick);
+    document.addEventListener("keydown", this.handleSearchKeydown);
+    const sentinel = document.querySelector("#scroll-sentinel");
+    if (sentinel) {
+      let cleanup;
+      cleanup = createScrollObserver(sentinel, async () => {
+        const isLastPage = await this.handleLoadMoreScroll();
+        if (isLastPage) cleanup();
+      });
+    }
+  }
   handleLoadMoreScroll = async () => {
-    if (!this.state.isSearched) {
-      this.state.moviePageCount += 1;
-      const totalPopularPages = await renderMovies(this.state.moviePageCount);
-      if (totalPopularPages === this.state.moviePageCount) {
-        return true;
+    if (this.state.isLoading) return false;
+    this.state.isLoading = true;
+    try {
+      if (!this.state.isSearched) {
+        const nextPage = this.state.moviePageCount + 1;
+        const totalPages = await renderMovies(nextPage);
+        if (totalPages > 0) this.state.moviePageCount = nextPage;
+        if (totalPages === nextPage) return true;
+      } else {
+        const nextPage = this.state.searchPageCount + 1;
+        const totalSearchPages = await renderSearchedMovies(
+          this.state.currentKeyword,
+          nextPage
+        );
+        if (totalSearchPages > 0) this.state.searchPageCount = nextPage;
+        if (nextPage === totalSearchPages) return true;
       }
-    } else {
-      this.state.searchPageCount += 1;
-      const totalSearchPages = await renderSearchedMovies(
-        this.state.currentKeyword,
-        this.state.searchPageCount
-      );
-      if (totalSearchPages === this.state.searchPageCount) {
-        return true;
-      }
+    } finally {
+      this.state.isLoading = false;
     }
     return false;
   };
   handleSearchSubmit = async () => {
+    this.state.isLoading = true;
     this.state.isSearched = true;
     this.state.searchPageCount = 1;
     this.state.currentKeyword = document.querySelector(".search-input").value;
-    const list = document.querySelector(".thumbnail-list");
-    if (list) list.replaceChildren();
-    const header = document.querySelector("#header");
-    if (header) {
-      header.replaceChildren();
-      replaceBanner(header, this.state.currentKeyword);
-    }
-    await renderSearchedMovies(
-      this.state.currentKeyword,
-      this.state.searchPageCount
-    );
-    const sectionTitle = document.querySelector("#section-title");
-    if (sectionTitle) {
-      sectionTitle.textContent = `"${this.state.currentKeyword}" 검색 결과`;
+    resetMovieList();
+    replaceHeaderWithBanner(this.state.currentKeyword);
+    replaceSectionTitle(this.state.currentKeyword);
+    try {
+      await renderSearchedMovies(
+        this.state.currentKeyword,
+        this.state.searchPageCount
+      );
+    } finally {
+      this.state.isLoading = false;
     }
   };
 }
@@ -280,6 +324,7 @@ class StarRating {
   currentScore = 0;
   hoverScore = 0;
   storage;
+  stars = [];
   constructor(container, movieId, storage) {
     this.container = container;
     this.movieId = movieId;
@@ -289,33 +334,48 @@ class StarRating {
     this.updateRatingUI();
   }
   bindRatingEvents() {
-    const stars = Array.from(this.container.querySelectorAll(".star.my-star"));
-    this.container.addEventListener("mouseover", (e) => {
-      if (e.target.closest(".star.my-star")) {
-        const targetStar = e.target.closest(".star.my-star");
-        const targetStarIndex = stars.indexOf(targetStar);
-        this.hoverScore = (targetStarIndex + 1) * 2;
-        this.updateRatingUI();
-      }
-    });
-    this.container.addEventListener("mouseout", (e) => {
-      if (e.target.closest(".star.my-star")) {
-        this.hoverScore = 0;
-        this.updateRatingUI();
-      }
-    });
-    this.container.addEventListener("click", (e) => {
-      if (e.target.closest(".star.my-star")) {
-        const targetStar = e.target.closest(".star.my-star");
-        const targetStarIndex = stars.indexOf(targetStar);
-        this.currentScore = (targetStarIndex + 1) * 2;
-        this.updateRatingUI();
-        this.storage.setRating(this.movieId, this.currentScore);
-      }
-    });
+    this.stars = Array.from(
+      this.container.querySelectorAll(".star.my-star")
+    );
+    this.container.addEventListener(
+      "mouseover",
+      (e) => this.handleMouseOver(e)
+    );
+    this.container.addEventListener(
+      "mouseout",
+      (e) => this.handleMouseOut(e)
+    );
+    this.container.addEventListener(
+      "click",
+      (e) => this.handleClick(e)
+    );
+  }
+  // 위에 이벤트리스너에 부착되는 이벤트 핸들러들
+  handleMouseOver(e) {
+    if (e.target.closest(".star.my-star")) {
+      const targetStar = e.target.closest(".star.my-star");
+      const targetStarIndex = this.stars.indexOf(targetStar);
+      this.hoverScore = (targetStarIndex + 1) * 2;
+      this.updateRatingUI();
+    }
+  }
+  handleMouseOut(e) {
+    if (e.target.closest(".star.my-star")) {
+      this.hoverScore = 0;
+      this.updateRatingUI();
+    }
+  }
+  handleClick(e) {
+    if (e.target.closest(".star.my-star")) {
+      const targetStar = e.target.closest(".star.my-star");
+      const targetStarIndex = this.stars.indexOf(targetStar);
+      this.currentScore = (targetStarIndex + 1) * 2;
+      this.updateRatingUI();
+      this.storage.setRating(this.movieId, this.currentScore);
+    }
   }
   updateRatingUI() {
-    const stars = Array.from(this.container.querySelectorAll(".star.my-star"));
+    const stars = this.stars;
     const starFilled = "./images/star_filled.png";
     const starEmpty = "./images/star_empty.png";
     let displayScore = this.currentScore;
@@ -358,18 +418,6 @@ class StarRating {
   }
   getScore() {
     return this.currentScore;
-  }
-}
-class LocalRatingStorage {
-  KEY = "movieRatings";
-  getRating(movieId) {
-    const ratings = JSON.parse(localStorage.getItem(this.KEY) || "{}");
-    return ratings[movieId] || 0;
-  }
-  setRating(movieId, score) {
-    const ratings = JSON.parse(localStorage.getItem(this.KEY) || "{}");
-    ratings[movieId] = score;
-    localStorage.setItem(this.KEY, JSON.stringify(ratings));
   }
 }
 const posterBaseURL = "https://image.tmdb.org/t/p/original/";
@@ -433,14 +481,14 @@ const createMovieDetailItem = (movieDetailData) => {
   img.src = posterSrc;
   return modalDiv;
 };
-const renderMovieDetail = async (movieId) => {
+const renderMovieDetail = async (movieId, storage) => {
   try {
     const movieDetailData = await fetchMovieDetail(movieId);
     const modal = document.querySelector(".modal");
     modal?.appendChild(createMovieDetailItem(movieDetailData));
     const rateContainer = modal?.querySelector(".my-rate");
     if (rateContainer) {
-      new StarRating(rateContainer, movieId, new LocalRatingStorage());
+      new StarRating(rateContainer, movieId, storage);
     }
   } catch (error) {
     alert(
@@ -450,59 +498,77 @@ const renderMovieDetail = async (movieId) => {
   }
 };
 class ModalHandler {
+  constructor(storage) {
+    this.storage = storage;
+  }
   modalArea = document.querySelector("#modalBackground");
+  init() {
+    document.addEventListener("click", this.handleMovieClick);
+    document.addEventListener("click", this.handleModalCloseButtonClick);
+    document.addEventListener("click", this.handleModalCloseBackdrop);
+    document.addEventListener("keydown", this.handleModalCloseButtonKeyDown);
+  }
   // 모달 닫는 핸들러
   handleModalCloseButtonClick = (e) => {
     if (e.target.closest("#closeModal")) {
       document.querySelector(".modal-container")?.remove();
-      this.modalArea?.classList.remove("active");
+      this.hideModal();
     }
   };
   handleModalCloseButtonKeyDown = (e) => {
     if (e.key === "Escape") {
       document.querySelector(".modal-container")?.remove();
-      this.modalArea?.classList.remove("active");
+      this.hideModal();
     }
   };
   handleModalCloseBackdrop = (e) => {
     if (e.target === this.modalArea) {
       document.querySelector(".modal-container")?.remove();
-      this.modalArea?.classList.remove("active");
+      this.hideModal();
     }
   };
   handleMovieClick = async (e) => {
-    if (e.target.closest(".item")) {
+    const target = e.target;
+    if (target.closest(".item") || target.closest(".primary.detail")) {
       const movieId = Number(
-        e.target.closest("[data-id]")?.getAttribute("data-id")
+        target.closest("[data-id]")?.getAttribute("data-id")
       );
       document.querySelector(".modal-container")?.remove();
-      await renderMovieDetail(movieId);
-      this.showModal();
-    }
-    if (e.target.closest(".primary.detail")) {
-      const movieId = Number(
-        e.target.closest("[data-id]")?.getAttribute("data-id")
-      );
-      document.querySelector(".modal-container")?.remove();
-      await renderMovieDetail(movieId);
+      await renderMovieDetail(movieId, this.storage);
       this.showModal();
     }
   };
   showModal() {
     this.modalArea?.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+  hideModal() {
+    document.querySelector(".modal-container")?.remove();
+    this.modalArea?.classList.remove("active");
+    document.body.style.overflow = "";
   }
 }
-const createScrollObserver = (targetElement, onIntersect) => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        onIntersect();
-      }
-    });
-  });
-  observer.observe(targetElement);
-  return () => observer.disconnect();
-};
+class LocalRatingStorage {
+  KEY = "movieRatings";
+  getRating(movieId) {
+    try {
+      const ratings = JSON.parse(localStorage.getItem(this.KEY) || "{}");
+      return ratings[movieId] || 0;
+    } catch (error) {
+      console.error("JSON 파싱에 실패하였습니다.");
+      return 0;
+    }
+  }
+  setRating(movieId, score) {
+    try {
+      const ratings = JSON.parse(localStorage.getItem(this.KEY) || "{}");
+      ratings[movieId] = score;
+      localStorage.setItem(this.KEY, JSON.stringify(ratings));
+    } catch (error) {
+      console.error("별점 저장에 실패하였습니다.");
+    }
+  }
+}
 class App {
   state = new AppState();
   constructor() {
@@ -511,26 +577,11 @@ class App {
       /\/images\//g,
       `${base2}images/`
     );
-    renderMovies(this.state.moviePageCount);
-    this.addEventListeners();
+    this.init();
   }
-  addEventListeners() {
-    const search = new SearchHandler(this.state);
-    const modal = new ModalHandler();
-    document.addEventListener("click", search.handleSearchButtonClick);
-    document.addEventListener("keydown", search.handleSearchKeydown);
-    document.addEventListener("click", modal.handleMovieClick);
-    document.addEventListener("click", modal.handleModalCloseButtonClick);
-    document.addEventListener("click", modal.handleModalCloseBackdrop);
-    document.addEventListener("keydown", modal.handleModalCloseButtonKeyDown);
-    const sentinel = document.querySelector("#scroll-sentinel");
-    if (sentinel) {
-      let cleanup;
-      cleanup = createScrollObserver(sentinel, async () => {
-        const isLastPage = await search.handleLoadMoreScroll();
-        if (isLastPage) cleanup();
-      });
-    }
+  async init() {
+    await new MovieBrowseHandler(this.state).init();
+    new ModalHandler(new LocalRatingStorage()).init();
   }
 }
 new App();
